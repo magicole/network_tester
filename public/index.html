@@ -1,16 +1,95 @@
 <html ng-app="mymod">
   <head>
     <meta charset = "utf-8">
-    <title>MY super duper app</title>
+    <title>Network Speed Tester</title>
+    <link rel="stylesheet" href="css/foundation.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="js/vendor/foundation.min.js"></script>
+    
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
     <script src="core.js"></script>
   </head>
   
   <body ng-controller="mainController">
-    <h1>My super simple app</h1>
+    <div class="grid-container">
+      <div class="grid-x">
+	<div class="medium-6 cell">
+	  <h1>Network Speed Tester</h1>
+	</div>
+	<div class="medium-6 cell">
+	  <h2 class="subheader">version 1.0</h2>
+	</div>
+      </div>
+    </div>
+
+    <div class="grid-container">
+      <div class="grid-x grid-padding-x">
+	<div class="auto cell">
+	  <div class="stat text-center" >{{lastResult}} Mbps</div>
+	</div>
+      </div>
+
+      <!-- <div class="grid-x grid-padding-x"> -->
+      <!-- 	<div class="auto cell"> -->
+      <!-- 	  <div class="progress" tabindex="0"> -->
+      <!-- 	    <span class="progress-meter" style="width: {{testPercent}}%"> -->
+      <!-- 	      <p class="progress-meter-text">{{testState}}</p> -->
+      <!-- 	    </span> -->
+      <!-- 	  </div> -->
+      <!-- 	</div> -->
+      <!-- </div> -->
+    </div>
+    
     <form>
-      <input type="text" ng-model="formData.text">
-      <button type="submit" ng-click="sendData()">Destroy world</buton>
+      <div class="grid-container">
+	<div class="grid-x grid-padding-x">
+	  <div class="medium-4 cell">
+	    <fieldset class="fieldset">
+	      <legend>Client</legend>
+	      <div class="input-group">
+		<span class="input-group-label">Client IP</span>
+		<input class="input-group-field" type="text" ng-model="testParams.clientIP">
+	      </div>
+	      <div class="input-group">
+		<span class="input-group-label">Client Username</span>
+		<input class="input-group-field" type="text" ng-model="testParams.clientUsername">
+	      </div>
+	      <div class="input-group">
+		<span class="input-group-label">Client Password</span>
+		<input class="input-group-field" type="password" ng-model="testParams.clientPassword">
+	      </div>
+	    </fieldset>
+	  </div>
+	  <div class="medium-4 cell">
+	    <fieldset class="fieldset">
+	      <legend>Server</legend>
+	      <div class="input-group">
+		<span class="input-group-label">Server IP</span>
+		<input class="input-group-field" type="text" ng-model="testParams.serverIP">
+	      </div>
+	      <div class="input-group">
+		<span class="input-group-label">Server Username</span>
+		<input class="input-group-field" type="text" ng-model="testParams.serverUsername">
+	      </div>
+	      <div class="input-group">
+		<span class="input-group-label">Server Password</span>
+		<input class="input-group-field" type="password" ng-model="testParams.serverPassword">
+	      </div>
+	    </fieldset>
+	  </div>
+	  <div class="medium-4 cell">
+	    <fieldset class="fieldset">
+	      <legend>Options</legend>
+	      <input id="reverse" type="checkbox" ng-model="testParams.reverse"><label for="reverse">Reverse Test</label></input>
+	    </fieldset>
+	  </div>
+	</div>
+	<div class="grid-x grid-padding-x">
+	  <div class="auto cell">
+	    <button type="submit" id="testButton" class="button expanded" ng-click="runTest()">{{buttonValue}}</button>
+	  </div>
+	</div>
+      </div>
+    </form>
   </body>  
 </html>

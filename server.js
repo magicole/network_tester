@@ -1,3 +1,5 @@
+var iperf = require('./iperf3_utils.js');
+var WebSocket = require('ws');
 var express = require('express');
 var app = express();
 var morgan = require('morgan');
@@ -11,6 +13,31 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({type: 'application/vnd.api+json'}));
 app.use(methodOverride());
 
+var wss = new WebSocket.Server({port: 8081});
+
+//var response;
+
+function runClient(testParams, pid){
+    console.log("iperf3 Server started with PID: " + pid);
+    //response.send("server");
+    iperf.startClient(testParams, stopServer);
+    console.log("starting client");
+}
+
+function stopServer(testParams, speed){
+    console.log("Upload speed was: " + speed + " Mbps");
+    console.log("Stopping Server");
+    //response.send("client");
+    iperf.stopServer(testParams);
+    //response.send({"upload": speed});
+    testParams.res.send({"upload": speed});
+}
+
+function runTest(testParams){
+    console.log("test initiated");
+    iperf.startServer(testParams, runClient);
+}
+
 //generate routes for our api
 app.get('/api/getNum', function(req, res){
     //res.send('hello');
@@ -18,11 +45,18 @@ app.get('/api/getNum', function(req, res){
 	       a: "zed"};
     res.json(foo);
 });
-app.post('/api/test', function(req, res){
-    console.log("Request body: ");
-    console.log(req.body);
-    res.send("foobar for you");
+
+app.post('/api/runTest', function(req, res){
+    //console.log("Got Test request with data:");
+    //console.log(req.body);
+    
+    //testParams = req.body;
+    var tp = req.body;
+    tp.res = res;
+    runTest(tp);
+    //res.send({"upload": 42});
 });
+
 app.get('*', function(req, res){
     res.sendFile('./public/index.html');
 });

@@ -15,25 +15,42 @@ function reportResults(results, reverse){
     return speed;
 }
 
-module.exports.startClient = function(reverse, clientAddress, serverAddress, username, password, finishedCallback){
+module.exports.startClient = function(testParams, finishedCallback){
     var client_speed = 0;
+    if(testParams.clientUsername == undefined){
+	console.log("Params where bug:");
+	console.log(testParams);
+	console.log(reverse);
+	console.log(finishedCallback);
+    }
     var client = new SSH({
-	host: clientAddress,
-	user: username,
-	pass: password
+	host: testParams.clientIP,
+	user: testParams.clientUsername,
+	pass: testParams.clientPassword
     });
 
     var options = " -J";
-    if(reverse){
+    if(testParams.reverse){
 	options += " -R";
     }
-    client.exec("iperf3 -c " + serverAddress + options,{
+    client.exec("iperf3 -c " + testParams.serverIP + options,{
 	out: function(output){
 	    //client_speed = csvParse(output, reportResults);
 	    json_parsed = JSON.parse(output);
-	    client_speed = reportResults(json_parsed, reverse);
+	    console.log("Parsed Json");
+	    client_speed = reportResults(json_parsed, testParams.reverse);
+	    console.log("check" + client_speed);
+	    // if(json_parsed.end.sum_sent != undefined){
+	    // 	client_speed = reportResults(json_parsed, testParams.reverse);
+	    // }else{
+	    // 	client_speed = "ERROR";
+	    // 	console.log(json_parsed);
+	    // }
 	    if(typeof finishedCallback == "function"){
-		finishedCallback(client_speed);
+		console.log("calling callback");
+		finishedCallback(testParams, client_speed);
+	    }else{
+		console.log("callback of type: " + typeof finishedCallback);
 	    }
 	}
     }).start();
@@ -61,21 +78,22 @@ function getServerPID(serverAddress, username, password){
     //return pid;
 }
 
-module.exports.startServer = function(serverAddress, username, password, finishedCallback){
+module.exports.startServer = function(testParams, finishedCallback){
     //start server in here
     //set serverPID value
     var server = new SSH({
-	host: serverAddress,
-	user: username,
-	pass: password
+	host: testParams.serverIP,
+	user: testParams.serverUsername,
+	pass: testParams.serverPassword
     });
+    serverPID = 0;
     server.exec("pgrep iperf3",{
 	out: function(output){serverPID = output.substring(0, output.length - 1);},
 	exit: function(code){
 	    if(serverPID != "0"){
 		//console.log("Server already started with PID: " + serverPID);
 		if(typeof finishedCallback == 'function'){
-		    finishedCallback(serverPID);
+		    finishedCallback(testParams, serverPID);
 		}
 		return false; // cancel the current exec stack 
 	    }
@@ -87,20 +105,20 @@ module.exports.startServer = function(serverAddress, username, password, finishe
 	    serverPID = output.substring(0, output.length -1);
 	    //console.log("Server started with PID: " + serverPID);
 	    if(typeof finishedCallback == 'function'){
-		finishedCallback(serverPID);
+		finishedCallback(testParams, serverPID);
 	    }
 	}
     });
     server.start();
 };
 
-module.exports.stopServer = function(serverAddress, username, password){
+module.exports.stopServer = function(testParams){
     //user serverPID with a kill
     var pid = "0";
     var server = new SSH({
-	host: serverAddress,
-	user: username,
-	pass: password
+	host: testParams.serverIP,
+	user: testParams.serverUsername,
+	pass: testParams.serverPassword
     });
 
     server.exec("pgrep iperf3",{

@@ -1,29 +1,31 @@
 var mymod = angular.module('mymod', []);
 
 function mainController($scope, $http){
-    $scope.formData = {};
+    $scope.testParams = {};
+    $scope.lastResult = 32;
+    $scope.testState = "";
+    $scope.buttonValue = "Start Test";
+    
 
-    //make an initial call to getNum
-    $http.get('/api/getNum')
-	.success(function(data){
-	    $scope.number = data;
-	    console.log(data);
-	})
-	.error(function(data){
-	    console.log("Error: " + data);
-	});
-
-    //define sendData to call our api
-    $scope.sendData = function(){
-	$scope.formData.doors = "wide open";
-	$http.post('/api/test', $scope.formData)
+    $scope.runTest = function(){
+	//console.log("running test");
+	//console.log($scope.testParams);
+	$scope.buttonValue = "Test Running";
+	var button = document.getElementById("testButton");
+	button.classList.add("alert");
+	button.disabled = true;
+	
+	$http.post('/api/runTest', $scope.testParams)
 	    .success(function(data){
-		$scope.formData = {};
-		$scope.number = data;
-		console.log(data);
+		//$scope.lastResult = data.upload;
+		//console.log(data);
+		$scope.buttonValue = "Start Test";
+		button.classList.remove("alert");
+		button.disabled = false;
+		$scope.lastResult = data.upload;
 	    })
 	    .error(function(data){
-		console.log("Error: " + data);
+		console.log("ERROR: " + data);
 	    });
     };
 }
