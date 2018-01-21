@@ -6,7 +6,10 @@
   "dependencies": {
     "csv": "^2.0.0",
     "express": "^4.16.2",
-    "simple-ssh": "^1.0.0"
+    "method-override": "^2.3.10",
+    "morgan": "^1.9.0",
+    "simple-ssh": "^1.0.0",
+    "ws": "^3.3.1"
   },
   "devDependencies": {},
   "scripts": {
