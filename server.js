@@ -18,6 +18,11 @@ var wss = new WebSocket.Server({port: 8081});
 //var response;
 
 function runClient(testParams, pid){
+    if(pid == -1){
+        //console.log("Triggered");
+        testParams.res.send({"upload": "noServer"});
+        return;
+    }
     console.log("iperf3 Server started with PID: " + pid);
     //response.send("server");
     iperf.startClient(testParams, stopServer);
@@ -25,12 +30,17 @@ function runClient(testParams, pid){
 }
 
 function stopServer(testParams, speed){
+    if(speed == -1){
+        testParams.res.send({"upload": "noClient"});
+    }
     console.log("Upload speed was: " + speed + " Mbps");
     console.log("Stopping Server");
     //response.send("client");
     iperf.stopServer(testParams);
     //response.send({"upload": speed});
-    testParams.res.send({"upload": speed});
+    if(speed != -1){
+        testParams.res.send({"upload": speed});
+    }
 }
 
 function runTest(testParams){

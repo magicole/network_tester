@@ -8,36 +8,30 @@
     
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
     <script src="core.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
   </head>
   
   <body ng-controller="mainController">
     <div class="grid-container">
       <div class="grid-x">
-	<div class="medium-6 cell">
-	  <h1>Network Speed Tester</h1>
-	</div>
-	<div class="medium-6 cell">
-	  <h2 class="subheader">version 1.0</h2>
-	</div>
+				<div class="auto cell">
+					<h1>Network Speed Tester</h1>
+				</div>
+				<div class="auto cell">
+					<h2 class="subheader">version 1.0</h2>
+				</div>
       </div>
     </div>
 
     <div class="grid-container">
-      <div class="grid-x grid-padding-x">
-	<div class="auto cell">
-	  <div class="stat text-center" >{{lastResult}} Mbps</div>
-	</div>
+      <!-- <div class="grid-x grid-padding-x">
+				<div class="auto cell">
+					<canvas id="myChart" width="100" height="50"></canvas>
+				</div> -->
+				<div class="auto cell">
+					<div class="stat text-center" >{{lastResult}} Mbps</div>
+				</div>
       </div>
-
-      <!-- <div class="grid-x grid-padding-x"> -->
-      <!-- 	<div class="auto cell"> -->
-      <!-- 	  <div class="progress" tabindex="0"> -->
-      <!-- 	    <span class="progress-meter" style="width: {{testPercent}}%"> -->
-      <!-- 	      <p class="progress-meter-text">{{testState}}</p> -->
-      <!-- 	    </span> -->
-      <!-- 	  </div> -->
-      <!-- 	</div> -->
-      <!-- </div> -->
     </div>
     
     <form>
@@ -80,7 +74,11 @@
 	  <div class="medium-4 cell">
 	    <fieldset class="fieldset">
 	      <legend>Options</legend>
-	      <input id="reverse" type="checkbox" ng-model="testParams.reverse"><label for="reverse">Reverse Test</label></input>
+	      <input id="upload" type="radio" name="testType" value="upload"><label for="upload">Upload Test</label></input>
+	      </br>
+	      <input id="reverse" type="radio" name="testType" value="reverse" ng-model="testParams.reverse"><label for="reverse">Download Test (reverse)</label></input>
+	      <!-- </br>
+	      <input id="upDown" type="radio" name="testType" value="upDown"><label for="upDown">Upload and Download Test</label></input> -->
 	    </fieldset>
 	  </div>
 	</div>
@@ -91,5 +89,8 @@
 	</div>
       </div>
     </form>
+
+    <!-- <script src="js/displayChart.js"></script> -->
+    
   </body>  
 </html>

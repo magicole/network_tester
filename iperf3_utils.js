@@ -53,7 +53,15 @@ module.exports.startClient = function(testParams, finishedCallback){
 		console.log("callback of type: " + typeof finishedCallback);
 	    }
 	}
-    }).start();
+	});
+	
+	client.start({
+		fail: function(){
+			console.log("could not connect to client");
+			finishedCallback(testParams, -1);
+			return -1;
+		}
+	});
 
     return client_speed;
 };
@@ -74,7 +82,8 @@ function getServerPID(serverAddress, username, password){
 	    console.log(typeof(pid));
 	    return pid;
 	}
-    }).start();
+	}).start();
+	
     //return pid;
 }
 
@@ -101,15 +110,20 @@ module.exports.startServer = function(testParams, finishedCallback){
     });
     server.exec("iperf3 -s -D");
     server.exec("pgrep iperf3",{
-	out: function(output){
-	    serverPID = output.substring(0, output.length -1);
-	    //console.log("Server started with PID: " + serverPID);
-	    if(typeof finishedCallback == 'function'){
-		finishedCallback(testParams, serverPID);
-	    }
+		out: function(output){
+			serverPID = output.substring(0, output.length -1);
+			//console.log("Server started with PID: " + serverPID);
+			if(typeof finishedCallback == 'function'){
+			finishedCallback(testParams, serverPID);
+			}
 	}
     });
-    server.start();
+    server.start({
+		fail: function(){
+			console.log("could not connect to server");
+			finishedCallback(testParams, -1);
+		}
+	});
 };
 
 module.exports.stopServer = function(testParams){
